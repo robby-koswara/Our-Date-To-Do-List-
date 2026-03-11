@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-image: url('232770.jpg');
+            background-image: url('232811.jpg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -17,46 +17,94 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow: hidden; 
         }
         
-        /* Lapisan tipis untuk meredupkan background sedikit saja agar foto jelas tapi teks web terbaca */
         .overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.2); 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.05); /* Sangat tipis */
             z-index: -1;
         }
 
+        /* --- LAYAR PEMBUKA --- */
+        #welcome-screen {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1s ease, visibility 1s;
+        }
+        #welcome-screen h2 {
+            font-size: 36px; color: #d81b60; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(255,255,255,0.8);
+            animation: floatUpDown 3s ease-in-out infinite;
+        }
+        #welcome-screen p {
+            font-size: 18px; color: #ff4081; margin-bottom: 30px; font-weight: bold;
+        }
+        .open-btn {
+            padding: 15px 30px; font-size: 18px; background-color: #ff4081; color: white; border: none; 
+            border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 20px rgba(255, 64, 129, 0.5);
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .open-btn:hover { background-color: #d81b60; transform: scale(1.05); }
+        
+        @keyframes floatUpDown {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        /* -------------------------------------- */
+
         .container {
-            /* Kotak hitam transparan TANPA BLUR agar foto di belakangnya 100% tajam */
-            background-color: rgba(0, 0, 0, 0.65); 
+            /* Kaca Bening Tipis (Blur Dikurangi Drastis) */
+            background-color: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(1px); /* Blur sangat sedikit agar foto jelas */
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             width: 100%;
             max-width: 500px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            opacity: 0; 
+            transform: scale(0.9);
+            transition: opacity 1s ease, transform 1s ease;
         }
 
-        h1 { color: #ffffff; text-align: center; font-size: 32px; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #ffb3c6; margin-bottom: 25px; font-size: 16px; font-style: italic; }
+        .container.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h1 { color: #d81b60; text-align: center; font-size: 32px; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(255,255,255,0.9); }
+        p.subtitle { text-align: center; color: #ff4081; margin-bottom: 15px; font-size: 16px; font-style: italic; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.9); }
         
+        /* Spotify Player Styling */
+        .spotify-container {
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
         .input-group { display: flex; margin-bottom: 20px; }
         input[type="text"] { 
-            flex-grow: 1; padding: 12px; border: none; border-radius: 10px 0 0 10px; outline: none; font-size: 16px; 
-            background: rgba(255,255,255,0.9); color: #333;
+            flex-grow: 1; padding: 12px; border: 1px solid rgba(255,255,255,0.8); border-radius: 10px 0 0 10px; outline: none; font-size: 16px; 
+            background: rgba(255,255,255,0.8); color: #333;
         }
         input[type="text"]:focus { box-shadow: 0 0 0 2px #ff4081 inset; }
         button.add-btn { padding: 12px 20px; background-color: #ff4081; color: white; border: none; border-radius: 0 10px 10px 0; cursor: pointer; font-weight: bold; transition: background 0.3s; }
         button.add-btn:hover { background-color: #d81b60; }
         
-        ul { list-style-type: none; padding: 0; max-height: 400px; overflow-y: auto; }
+        ul { list-style-type: none; padding: 0; max-height: 350px; overflow-y: auto; }
         li { 
-            background: rgba(0,0,0,0.4); /* List hitam transparan */
+            /* List bening agar foto terlihat jelas di sela-sela tulisan */
+            background: rgba(255, 255, 255, 0.45); 
             margin-bottom: 10px; padding: 15px; border-radius: 10px; display: flex; align-items: center; 
-            transition: all 0.3s ease; border-left: 5px solid #ffb3c6; border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease; border-left: 5px solid #ffb3c6; border: 1px solid rgba(255,255,255,0.6);
+            backdrop-filter: none; /* Efek blur dihilangkan sepenuhnya di sini */
         }
-        li:hover { transform: translateX(5px); background: rgba(0,0,0,0.6); }
+        li:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.65); }
         
         input[type="checkbox"] {
             appearance: none; -webkit-appearance: none; width: 26px; height: 26px; margin-right: 15px; cursor: pointer; flex-shrink: 0;
@@ -70,15 +118,15 @@
 
         @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
 
-        .completed { text-decoration: line-through; border-left-color: rgba(255,255,255,0.2); background-color: rgba(0,0,0,0.2); }
-        .text { flex-grow: 1; font-size: 16px; color: #ffffff; } 
-        .completed .text { color: rgba(255,255,255,0.4); }
-        .delete-btn { background: none; border: none; color: #ffb3c6; cursor: pointer; font-size: 18px; padding: 0 5px; }
-        .delete-btn:hover { color: #ff4081; }
-        .loading { text-align: center; color: #ffb3c6; font-style: italic; border-left: none; background: transparent; }
+        .completed { text-decoration: line-through; border-left-color: rgba(255,255,255,0.4); background-color: rgba(255,255,255,0.2); }
+        .text { flex-grow: 1; font-size: 16px; color: #111; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.8); } 
+        .completed .text { color: #555; font-weight: normal; }
+        .delete-btn { background: none; border: none; color: #ff4081; cursor: pointer; font-size: 18px; padding: 0 5px; }
+        .delete-btn:hover { color: #d81b60; }
+        .loading { text-align: center; color: #d81b60; font-style: italic; font-weight: bold; border-left: none; background: transparent; }
         
         .floating-heart {
-            position: fixed; font-size: 22px; pointer-events: none; z-index: 1000;
+            position: fixed; font-size: 22px; pointer-events: none; z-index: 10000;
             animation: popOut 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
         @keyframes popOut {
@@ -86,38 +134,28 @@
             100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
         }
 
-        .music-btn {
-            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%;
-            background-color: #ff4081; color: white; font-size: 24px; border: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            cursor: pointer; z-index: 1000; display: flex; justify-content: center; align-items: center; transition: transform 0.3s;
-        }
-        .music-btn:hover { transform: scale(1.1); }
-        .music-btn.playing { background-color: #d81b60; animation: pulse 2s infinite; }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 64, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0); }
-        }
-
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 179, 198, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 179, 198, 0.8); border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div class="overlay"></div>
 
-<audio id="bg-music" loop preload="auto">
-    <source src="lagu.mp3" type="audio/mpeg">
-</audio>
+<div id="welcome-screen">
+    <h2>Hallo Sayangkuu... ❤️</h2>
+    <p>Ada sesuatu nih untukmu.</p>
+    <button class="open-btn" onclick="startExperience()">Buka Petualangan Kita</button>
+</div>
 
-<button id="musicToggleBtn" class="music-btn" onclick="toggleMusic()" title="Play/Pause Music">🎵</button>
-
-<div class="container">
+<div class="container" id="main-container">
     <h1>Robby & Aisyah ❤️</h1>
     <p class="subtitle">Adventures to look forward to...</p>
+    
+    <div class="spotify-container">
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3U4isOIWM3VvDubwSI3y7a?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
     
     <div class="input-group">
         <input type="text" id="dateInput" placeholder="Tambahkan ide kencan baru...">
@@ -136,40 +174,18 @@
     let dates = [];
     const listElement = document.getElementById('dateList');
     const inputElement = document.getElementById('dateInput');
-    
-    // Kontrol Musik dengan Deteksi Error
-    const music = document.getElementById('bg-music');
-    const musicBtn = document.getElementById('musicToggleBtn');
-    let isMusicPlaying = false;
 
-    function toggleMusic() {
-        if (isMusicPlaying) {
-            music.pause();
-            musicBtn.innerHTML = '🎵';
-            musicBtn.classList.remove('playing');
-            isMusicPlaying = false;
-        } else {
-            music.play().then(() => {
-                musicBtn.innerHTML = '⏸️';
-                musicBtn.classList.add('playing');
-                isMusicPlaying = true;
-            }).catch(e => {
-                console.error(e);
-                alert("Ups! Lagu tidak bisa diputar. Pastikan file lagunya bernama persis 'lagu.mp3' (bukan lagu.mp3.mp3) dan sudah kamu masukkan ke dalam folder yang diupload ke Netlify.");
-            });
-        }
+    // Fungsi saat tombol BUKA diklik
+    function startExperience() {
+        const welcomeScreen = document.getElementById('welcome-screen');
+        welcomeScreen.style.opacity = '0';
+        setTimeout(() => { 
+            welcomeScreen.style.visibility = 'hidden'; 
+            document.body.style.overflow = 'auto';
+        }, 1000);
+
+        document.getElementById('main-container').classList.add('show');
     }
-
-    // Auto-play
-    document.body.addEventListener('click', function() {
-        if (!isMusicPlaying) {
-            music.play().then(() => {
-                isMusicPlaying = true;
-                musicBtn.innerHTML = '⏸️';
-                musicBtn.classList.add('playing');
-            }).catch(e => console.log("Menunggu interaksi atau lagu tidak ditemukan."));
-        }
-    }, { once: true });
 
     function sortDates() {
         dates.sort((a, b) => {
